@@ -1,10 +1,12 @@
-package com.moo.eggu.ui
+package com.moo.eggu.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,36 +15,41 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.moo.eggu.navigation.Destinations
+import com.moo.eggu.navigation.NavGraph
+import com.moo.eggu.ui.components.TaskItem
 import com.moo.eggu.viewmodel.EgguViewModel
+import com.moo.eggu.viewmodel.Task
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(navController: NavController, viewModel: EgguViewModel) {
+fun TaskList(navController: NavController, viewModel: EgguViewModel) {
+    val tasks: List<Task> by viewModel.taskList.observeAsState(emptyList())
     Surface {
         Column(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            var text by remember { mutableStateOf("") }
-            TextField(value = text, onValueChange = {text = it}, label = { Text(text = "Name")})
-            Button(
-                onClick = { navController.navigate(Destinations.TIME)
-                          viewModel.name = text},
-                modifier = Modifier
-                    .fillMaxWidth(.75f)
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
+            LazyColumn(modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("SUBMIT")
+                items(tasks) {
+                    TaskItem(it)
+                }
             }
+        }
+        Button(onClick = {
+            navController.clearBackStack(Destinations.HOME)
+            navController.navigate(Destinations.HOME)
+             }) {
+
         }
     }
 }
