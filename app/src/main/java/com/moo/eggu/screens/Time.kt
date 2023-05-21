@@ -45,7 +45,8 @@ fun Time(navController: NavController, viewModel: EgguViewModel) {
                 onClick = {
                     navController.navigate(Destinations.TASKS)
                     viewModel.time = text
-                    viewModel.addTask()
+                    //viewModel.addTask()
+                    viewModel.addNote()
                 },
                 modifier = Modifier
                     .fillMaxWidth(.75f)

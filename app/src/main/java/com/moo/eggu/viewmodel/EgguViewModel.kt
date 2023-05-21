@@ -1,17 +1,25 @@
 package com.moo.eggu.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moo.eggu.data.Note
+import com.moo.eggu.data.NoteRepo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class EgguViewModel: ViewModel() {
+class EgguViewModel(private val repo: NoteRepo): ViewModel() {
 
-    private var _taskList: MutableLiveData<List<Task>> = MutableLiveData(emptyList())
-    val taskList: LiveData<List<Task>> get() = _taskList
+    val noteList: Flow<List<Note>> = repo.getAllNotes()
+
+    private var _taskList: MutableStateFlow<List<Task>> = MutableStateFlow(emptyList())
+    val taskList: StateFlow<List<Task>> = _taskList.asStateFlow()
 
     val countdownFlow = flow<Int> {
         val start = 10
@@ -27,6 +35,21 @@ class EgguViewModel: ViewModel() {
     var time: String = ""
     private val tmpList = mutableListOf<Task>()
 
+    fun addNote() {
+        val note = Note(name = name, time = time)
+        viewModelScope.launch {
+            repo.insert(note)
+        }
+
+    }
+
+    fun deleteNotes() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repo.deleteNotes()
+            }
+        }
+    }
     fun addTask() {
         tmpList.add(Task(name, time))
         _taskList.value = tmpList
@@ -35,9 +58,6 @@ class EgguViewModel: ViewModel() {
         time = ""
     }
 
-    init {
-        collectFlow()
-    }
     private fun collectFlow() {
         viewModelScope.launch {
             countdownFlow.collect() {time ->

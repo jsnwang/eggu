@@ -5,15 +5,19 @@ import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.moo.eggu.data.NoteDatabase
+import com.moo.eggu.data.NoteRepo
 import com.moo.eggu.ui.theme.EgguTheme
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val db = NoteDatabase.getInstance(applicationContext)
+        val repo = NoteRepo(db.noteDao())
         setContent {
             EgguTheme() {
-                EgguApp()
+                EgguApp(repo)
             }
         }
     }
