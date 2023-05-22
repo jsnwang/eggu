@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,13 +33,15 @@ fun NoteItem(note: Note, viewModel: EgguViewModel) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = note.name,
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(8.dp).requiredWidthIn(max = 330.dp),
                 style = TextStyle(
-                    fontSize = 18.sp, color = MaterialTheme.colorScheme.onPrimaryContainer
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold,
                 ),
                 textAlign = TextAlign.Center
             )
-            IconButton(onClick = {  viewModel.showDeleteDialog() }) {
+            IconButton(onClick = { viewModel.showDeleteDialog() }) {
                 Icon(Icons.Rounded.Delete, "Delete")
             }
         }
@@ -46,26 +50,30 @@ fun NoteItem(note: Note, viewModel: EgguViewModel) {
                 text = note.time,
                 modifier = Modifier.padding(8.dp),
                 style = TextStyle(
-                    fontSize = 16.sp, color = MaterialTheme.colorScheme.onTertiaryContainer
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
                 ),
                 textAlign = TextAlign.Center
             )
         }
     }
-     if (viewModel.showDeleteDialog.value) {
-         AlertDialog(onDismissRequest = { viewModel.dismissDeleteDialog() },
-             title = { Text(text = "Delete") },
-             text = { Text(text = "Are you sure you want to delete this note?") },
-             confirmButton = {
-                 Button(onClick = { viewModel.deleteNote(note) }) {
-                     Text(text = "Yes")
-                 }
-             },
-             dismissButton = {
-                 Button(onClick = { viewModel.dismissDeleteDialog()}) {
-                     Text(text = "Cancel")
-                 }
-             }
-         )
-     }
+    if (viewModel.showDeleteDialog.value) {
+        AlertDialog(onDismissRequest = { viewModel.dismissDeleteDialog() },
+            title = { Text(text = "Delete") },
+            text = { Text(text = "Are you sure you want to delete this note?") },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.deleteNote(note)
+                    viewModel.dismissDeleteDialog()
+                }) {
+                    Text(text = "Yes")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { viewModel.dismissDeleteDialog() }) {
+                    Text(text = "Cancel")
+                }
+            }
+        )
+    }
 }

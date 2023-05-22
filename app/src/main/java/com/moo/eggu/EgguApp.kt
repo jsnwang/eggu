@@ -10,6 +10,6 @@ import com.moo.eggu.ui.components.EgguScaffold
 fun EgguApp(repo: NoteRepo) {
     val navController = rememberNavController()
     EgguScaffold (navController){
-        NavGraph(navController = navController, noteRepo = repo)
+        NavGraph(navController = navController, noteRepo = repo, topPaddingValues = it)
     }
 }

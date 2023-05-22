@@ -1,5 +1,5 @@
 package com.moo.eggu.navigation
-
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -12,11 +12,11 @@ import com.moo.eggu.viewmodel.EgguViewModel
 import com.moo.eggu.viewmodel.EgguViewModelFactory
 
 @Composable
-fun NavGraph(navController: NavHostController, noteRepo: NoteRepo) {
+fun NavGraph(navController: NavHostController, noteRepo: NoteRepo, topPaddingValues: PaddingValues) {
     val viewModel: EgguViewModel = viewModel(factory = EgguViewModelFactory(noteRepo))
 
     NavHost(navController = navController, startDestination = Destinations.NOTES) {
-        composable(Destinations.ADD) { AddNote(navController, viewModel) }
-        composable(Destinations.NOTES) { TaskList(navController, viewModel) }
+        composable(Destinations.ADD) { AddNote(navController, viewModel, topPaddingValues) }
+        composable(Destinations.NOTES) { TaskList(viewModel, topPaddingValues) }
     }
 }
