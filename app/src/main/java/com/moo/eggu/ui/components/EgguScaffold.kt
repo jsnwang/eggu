@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EgguScaffold(
-    title: String = "Title",
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -58,7 +57,6 @@ fun EgguScaffold(
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = title,
                         navigationIcon = {
                             if (drawerState.isOpen) {
                                 coroutineScope.launch {

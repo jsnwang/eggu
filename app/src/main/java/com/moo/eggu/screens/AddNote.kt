@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.moo.eggu.navigation.Destinations
@@ -27,25 +25,30 @@ import com.moo.eggu.viewmodel.EgguViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Time(navController: NavController, viewModel: EgguViewModel) {
+fun AddNote(navController: NavController, viewModel: EgguViewModel) {
     Surface {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var text by remember { mutableStateOf("") }
+            var subjectText by remember { mutableStateOf("") }
+            var contentText by remember { mutableStateOf("String") }
             TextField(
-                value = text,
-                onValueChange = { text = it },
-                label = { Text(text = "Time") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                value = subjectText,
+                onValueChange = { subjectText = it },
+                label = { Text(text = "Subject") },
+            )
+            TextField(
+                value = contentText,
+                onValueChange = { contentText = it },
+                label = { Text(text = "Note") },
             )
             Button(
                 onClick = {
-                    navController.navigate(Destinations.TASKS)
-                    viewModel.time = text
-                    //viewModel.addTask()
+                    navController.navigate(Destinations.NOTES)
+                    viewModel.subject = subjectText
+                    viewModel.content = subjectText
                     viewModel.addNote()
                 },
                 modifier = Modifier

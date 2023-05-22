@@ -41,8 +41,8 @@ fun Home(navController: NavController, viewModel: EgguViewModel) {
             var text by remember { mutableStateOf("") }
             TextField(value = text, onValueChange = {text = it}, label = { Text(text = "Name")})
             Button(
-                onClick = { navController.navigate(Destinations.TIME)
-                          viewModel.name = text},
+                onClick = { navController.navigate(Destinations.ADD)
+                          viewModel.subject = text},
                 modifier = Modifier
                     .fillMaxWidth(.75f)
                     .padding(16.dp),
