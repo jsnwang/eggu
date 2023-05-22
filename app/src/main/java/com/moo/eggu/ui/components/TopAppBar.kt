@@ -9,10 +9,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import com.moo.eggu.navigation.Destinations
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar(navigationIcon: () -> Unit) {
+fun TopAppBar(navigationIcon: () -> Unit, navController: NavController) {
     TopAppBar(
         title = { Text(text = "Notes") },
         navigationIcon = {
@@ -21,7 +23,11 @@ fun TopAppBar(navigationIcon: () -> Unit) {
             }
         },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                if (navController.currentDestination != navController.findDestination(Destinations.ADD)) {
+                    navController.navigate(Destinations.ADD)
+                }
+            }) {
                 Icon(Icons.Filled.Add, contentDescription = "Add")
             }
         },

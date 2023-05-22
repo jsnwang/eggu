@@ -9,6 +9,8 @@ class NoteRepo(private val dao: NoteDao) {
     suspend fun insert(note: Note) {
         dao.addNote(note)
     }
-
+    suspend fun delete(note: Note) {
+        dao.deleteNote(note)
+    }
     suspend fun deleteNotes() = dao.deleteTable()
 }

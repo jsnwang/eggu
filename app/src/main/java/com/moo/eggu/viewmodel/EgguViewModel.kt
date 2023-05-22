@@ -1,5 +1,6 @@
 package com.moo.eggu.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moo.eggu.data.Note
@@ -18,6 +19,19 @@ class EgguViewModel(private val repo: NoteRepo): ViewModel() {
 
     val noteList: Flow<List<Note>> = repo.getAllNotes()
 
+    private var _taskList: MutableStateFlow<List<Task>> = MutableStateFlow(emptyList())
+    val taskList: StateFlow<List<Task>> = _taskList.asStateFlow()
+
+    val showDeleteDialog = mutableStateOf(false)
+
+    fun showDeleteDialog() {
+        showDeleteDialog.value = true
+    }
+
+    fun dismissDeleteDialog() {
+        showDeleteDialog.value = false
+    }
+
     val countdownFlow = flow<Int> {
         val start = 10
         var current = start
@@ -28,17 +42,22 @@ class EgguViewModel(private val repo: NoteRepo): ViewModel() {
             emit(current)
         }
     }
-    var subject: String = ""
-    var content: String = ""
+
     private val tmpList = mutableListOf<Task>()
 
-    fun addNote() {
+    fun addNote(subject: String, content: String) {
         val note = Note(name = subject, time = content)
         viewModelScope.launch {
             repo.insert(note)
         }
-
     }
+
+    fun deleteNote(note: Note) {
+        viewModelScope.launch {
+            repo.delete(note)
+        }
+    }
+
 
     fun deleteNotes() {
         viewModelScope.launch {
@@ -47,6 +66,14 @@ class EgguViewModel(private val repo: NoteRepo): ViewModel() {
             }
         }
     }
+    fun addTask() {
+//        tmpList.add(Task(subject, time))
+//        _taskList.value = tmpList
+//
+//        subject = ""
+//        time = ""
+    }
+
     private fun collectFlow() {
         viewModelScope.launch {
             countdownFlow.collect() {time ->

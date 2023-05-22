@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,9 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moo.eggu.data.Note
+import com.moo.eggu.viewmodel.EgguViewModel
 
 @Composable
-fun NoteItem(note: Note) {
+fun NoteItem(note: Note, viewModel: EgguViewModel) {
     Card(
         shape = RoundedCornerShape(4.dp),
     ) {
@@ -30,12 +33,12 @@ fun NoteItem(note: Note) {
                 text = note.name,
                 modifier = Modifier.padding(8.dp),
                 style = TextStyle(
-                    fontSize = 24.sp, color = MaterialTheme.colorScheme.onPrimaryContainer
+                    fontSize = 18.sp, color = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
                 textAlign = TextAlign.Center
             )
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Filled.Face, "Delete")
+            IconButton(onClick = {  viewModel.showDeleteDialog() }) {
+                Icon(Icons.Rounded.Delete, "Delete")
             }
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -43,10 +46,26 @@ fun NoteItem(note: Note) {
                 text = note.time,
                 modifier = Modifier.padding(8.dp),
                 style = TextStyle(
-                    fontSize = 14.sp, color = MaterialTheme.colorScheme.onTertiaryContainer
+                    fontSize = 16.sp, color = MaterialTheme.colorScheme.onTertiaryContainer
                 ),
                 textAlign = TextAlign.Center
             )
         }
     }
+     if (viewModel.showDeleteDialog.value) {
+         AlertDialog(onDismissRequest = { viewModel.dismissDeleteDialog() },
+             title = { Text(text = "Delete") },
+             text = { Text(text = "Are you sure you want to delete this note?") },
+             confirmButton = {
+                 Button(onClick = { viewModel.deleteNote(note) }) {
+                     Text(text = "Yes")
+                 }
+             },
+             dismissButton = {
+                 Button(onClick = { viewModel.dismissDeleteDialog()}) {
+                     Text(text = "Cancel")
+                 }
+             }
+         )
+     }
 }

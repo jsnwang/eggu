@@ -33,7 +33,7 @@ fun AddNote(navController: NavController, viewModel: EgguViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             var subjectText by remember { mutableStateOf("") }
-            var contentText by remember { mutableStateOf("String") }
+            var contentText by remember { mutableStateOf("") }
             TextField(
                 value = subjectText,
                 onValueChange = { subjectText = it },
@@ -47,16 +47,14 @@ fun AddNote(navController: NavController, viewModel: EgguViewModel) {
             Button(
                 onClick = {
                     navController.navigate(Destinations.NOTES)
-                    viewModel.subject = subjectText
-                    viewModel.content = subjectText
-                    viewModel.addNote()
+                    viewModel.addNote(subjectText, contentText)
                 },
                 modifier = Modifier
                     .fillMaxWidth(.75f)
                     .padding(16.dp),
                 shape = RoundedCornerShape(16.dp),
             ) {
-                Text("TIME")
+                Text("Add")
             }
         }
     }
